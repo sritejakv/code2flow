@@ -1,0 +1,9 @@
+.idea/*
+build/*
+dist/*
+.DS_Store
+virEnv/*
+out.*
+code2flow.egg-info/*
+*.pyc
+

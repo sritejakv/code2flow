@@ -94,8 +94,8 @@ class Group(Group):
 
 			closeBracket = self.source.matchingBracketPos(openBracket)
 			if closeBracket == -1:
-				print "Could not find closing bracket for open bracket on line %d in file %s"%(self.source.getLineNumber(openBracket),self.name)
-				print "You might have a syntax error. Setting closing bracket position to EOF"
+				print("Could not find closing bracket for open bracket on line %d in file %s"%(self.source.getLineNumber(openBracket),self.name))
+				print("You might have a syntax error. Setting closing bracket position to EOF")
 				closeBracket = len(self.source)
 
 			#Try generating a new group
@@ -239,9 +239,9 @@ class Group(Group):
 				return newGroup
 
 		if DEBUG:
-			print "===================="
-			print preBlockSource.sourceString[-100:]
-			print 'what is this?'
+			print("====================")
+			print(preBlockSource.sourceString[-100:])
+			print('what is this?')
 
 		return None
 
@@ -308,7 +308,7 @@ class Group(Group):
 			while self.source.sourceString[openDelimPos] == '(':
 				openDelimPos = self.source.openDelimPos(openDelimPos-1)
 		else:
-			print 'what is this?'
+			print('what is this?')
 
 class SourceCode(SourceCode):
 	blockComments = [

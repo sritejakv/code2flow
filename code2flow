@@ -32,7 +32,7 @@ This python file is a wrapper for the functionality. Basically, it will:
 
 '''
 
-import __builtin__
+import builtins
 import argparse
 import os
 import pdb
@@ -79,10 +79,6 @@ SUPPORTED_LANGUAGES = {'js':'javascript','py':'python'}
 
 if __name__ == "__main__":
 
-	if not isInstalled('dot') and not isInstalled('dot.exe'):
-		print "You must have graphviz (specifically dot) installed to run code2flow"
-		sys.exit(1)
-
 	cli = argparse.ArgumentParser(description="See flow charts of your source code.\n\rThis EXPERIMENTAL script is useful for documentation and code refactoring in simple projects")
 	cli.add_argument('files', metavar='files', nargs='+', help='The source file you are trying to graph. Currently, only handles python and javascript') #
 	cli.add_argument('-o','--outfile', dest='outfile',help='Filetype can be dot, gv, png, ps, svg, etc. Default is `out.png`',default='out.png')
@@ -95,7 +91,7 @@ if __name__ == "__main__":
 	args = cli.parse_args()
 
 	#set debug for this and all imported modules
-	__builtin__.DEBUG = args.debug
+	builtins.DEBUG = args.debug
 
 	if DEBUG:
 		pprint.pprint(args)
@@ -108,7 +104,7 @@ if __name__ == "__main__":
 		language = None
 	files = []
 	if DEBUG:
-		print language
+		print(language)
 
 	def handleFile(fileString,forceAppend=False):
 		'''
@@ -167,8 +163,8 @@ if __name__ == "__main__":
 		command = "dot -T%s %s > %s"%(extension,dotFile,finalFile)
 		os.system(command)
 
-	print "Completed your flowchart!"
-	print "To see it, open %s"%args.outfile
+	print("Completed your flowchart!")
+	print("To see it, open %s"%args.outfile)
 
 	#open it in graphviz if we are on os.x
 	if DEBUG and sys.platform == 'darwin':
