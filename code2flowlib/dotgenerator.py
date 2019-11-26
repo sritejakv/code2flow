@@ -1,7 +1,14 @@
+import os
+
 def writeDotFile(dotFile,nodes,edges,groups,hidelegend=False):
 	'''
 	Write the dot file
 	'''
+
+	dir_path = os.sep.join(dotFile.split(os.sep)[:-1])
+	if len(dir_path) > 0 and not os.path.exists(dir_path):
+		os.makedirs(dir_path)
+
 	with open(dotFile,'w') as outfile:
 		outfile.write(generateDotFile(nodes,edges,groups,hidelegend))
 
