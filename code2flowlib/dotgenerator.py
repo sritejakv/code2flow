@@ -1,6 +1,6 @@
 import os
 
-def writeDotFile(dotFile,nodes,edges,groups,hidelegend=False):
+def writeDotFile(dotFile,nodes,edges,groups,run_time,hidelegend=False):
 	'''
 	Write the dot file
 	'''
@@ -10,9 +10,9 @@ def writeDotFile(dotFile,nodes,edges,groups,hidelegend=False):
 		os.makedirs(dir_path)
 
 	with open(dotFile,'w') as outfile:
-		outfile.write(generateDotFile(nodes,edges,groups,hidelegend))
+		outfile.write(generateDotFile(nodes,edges,groups,run_time,hidelegend))
 
-def generateDotFile(nodes,edges,groups,hidelegend=False):
+def generateDotFile(nodes,edges,groups,run_time,hidelegend=False):
 	'''
 	Return the string for the entire dotfile
 	To be appended:
@@ -41,6 +41,7 @@ def generateDotFile(nodes,edges,groups,hidelegend=False):
 	for node in nodes:
 		if str(node):
 			ret += str(node)+';\n'
+	ret += '%s [label="%s", style="invis"];\n' % ("code2flow_run_time", run_time)
 	for edge in edges:
 		ret += str(edge)+';\n'
 	#if False:
