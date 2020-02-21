@@ -24,6 +24,7 @@ import os
 import re
 import pdb
 import pprint
+import builtins
 
 from .mutablestring import MString
 
@@ -38,10 +39,10 @@ def generateEdges(nodes):
 	edges = []
 	for node0 in nodes:
 		for node1 in nodes:
-			if DEBUG:
+			if builtins.DEBUG:
 				print('"%s" links to "%s"?'%(node0.name,node1.name))
 			if node0.linksTo(node1):
-				if DEBUG:
+				if builtins.DEBUG:
 					print("Edge created")
 				edges.append(Edge(node0,node1))
 	return edges
@@ -369,7 +370,7 @@ class SourceCode(object):
 			self._removeCommentsAndStrings()
 			self.sourceString = str(self.sourceString) #convert back to regular python string from mutable string
 
-			if DEBUG:
+			if builtins.DEBUG:
 				#print 'REMOVED COMMENTS',self
 				with open('cleanedSource','w') as outfile:
 					outfile.write(self.sourceString)
@@ -463,13 +464,13 @@ class SourceCode(object):
 			return self.copy()
 
 		if self.firstLineNumber()>other.firstLineNumber() or self.lastLineNumber()<other.lastLineNumber():
-			pdb.set_trace()
+			#pdb.set_trace()
 			raise Exception("When subtracting a piece of one bit of sourcecode from another, the second must lie completely within the first")
 
 		firstPos = self.sourceString.find(other.sourceString)
 
 		if firstPos == -1:
-			pdb.set_trace()
+			# pdb.set_trace()
 			raise Exception('Could not subtract string starting with "%s" from source because string could not be found'%other.sourceString[:50].replace("\n","\\n"))
 
 		lastPos = firstPos + len(other.sourceString)
@@ -526,7 +527,7 @@ class SourceCode(object):
 		'''
 		firstPos = self.sourceString.find(stringToRemove)
 		if firstPos == -1:
-			pdb.set_trace()
+			# pdb.set_trace()
 			raise Exception("String not found in source")
 		lastPos = firstPos + len(stringToRemove)
 		return self[:firstPos]+self[lastPos:]
@@ -820,7 +821,7 @@ class Mapper(object):
 		#Trimming the groups mostly removes those groups with no function nodes
 		for group in fileGroups:
 			group.trimGroups()
-			if DEBUG:
+			if builtins.DEBUG:
 				print("Post trim, %s"%group.name)
 				group._pprint()
 

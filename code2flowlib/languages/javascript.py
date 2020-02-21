@@ -4,6 +4,7 @@ All of these classes subclass engine.py classes
 Functions that begin with an "_" are local and do not replace anything in engine.py
 '''
 
+import builtins
 from code2flowlib.engine import *
 
 class Node(Node):
@@ -238,7 +239,7 @@ class Group(Group):
 			if newGroup:
 				return newGroup
 
-		if DEBUG:
+		if builtins.DEBUG:
 			print("====================")
 			print(preBlockSource.sourceString[-100:])
 			print('what is this?')

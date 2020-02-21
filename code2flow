@@ -73,6 +73,18 @@ def isInstalled(program):
 
 	return False
 
+
+def pruned_files(implementation, filenames):
+	p_files = []
+	for file in filenames:
+		try:
+			mapper = implementation.Mapper(implementation, [file])
+			groups, nodes, edges = mapper.map()
+			p_files.append(file)
+		except Exception as e:
+			print("Exception %s in file %s" % (e, file))
+	return p_files
+
 SUPPORTED_LANGUAGES = {'js':'javascript','py':'python'}
 
 
@@ -80,20 +92,22 @@ SUPPORTED_LANGUAGES = {'js':'javascript','py':'python'}
 if __name__ == "__main__":
 
 	cli = argparse.ArgumentParser(description="See flow charts of your source code.\n\rThis EXPERIMENTAL script is useful for documentation and code refactoring in simple projects")
-	cli.add_argument('files', metavar='files', nargs='+', help='The source file you are trying to graph. Currently, only handles python and javascript') #
+	cli.add_argument('files', metavar='files', nargs='+', help='The source file you are trying to graph. Currently, only handles python and javascript', default=None) #
 	cli.add_argument('-o','--outfile', dest='outfile',help='Filetype can be dot, gv, png, ps, svg, etc. Default is `out.png`',default='out.png')
-	cli.add_argument('--language', dest='language',default=None)
+	cli.add_argument('--language', dest='language', default=None)
 	cli.add_argument('--hidelegend', dest='hidelegend',action='store_true',default=False)
 	#cli.add_argument('-v','--verbose', dest='verbose',action='store_true',default=False)
 	cli.add_argument('-d','--debug', dest='debug',action='store_true',default=False)
 	cli.add_argument('--version', action='version', version='%(prog)s 0.1')
+	cli.add_argument('--pruneEP', dest='pruneEp', action='store_true', default=False, help="Output the files that are run successfully from the input passed")
+	cli.add_argument('--rlib', dest='real_world_lib', default=None)
 
 	args = cli.parse_args()
 
 	#set debug for this and all imported modules
 	builtins.DEBUG = args.debug
 
-	if DEBUG:
+	if builtins.DEBUG:
 		pprint.pprint(args)
 		listen()
 
@@ -103,7 +117,7 @@ if __name__ == "__main__":
 	else:
 		language = None
 	files = []
-	if DEBUG:
+	if builtins.DEBUG:
 		print(language)
 
 	def handleFile(fileString,forceAppend=False):
@@ -142,7 +156,25 @@ if __name__ == "__main__":
 	else:
 		raise Exception("The file type you passed is not yet supported")
 
-	#Do the mapping (a lot happens here)
+	if args.pruneEp:
+		p_files = []
+		for file in files:
+			try:
+				mapper = implementation.Mapper(implementation, [file])
+				groups, nodes, edges = mapper.map()
+				p_files.append(file)
+			except Exception as e:
+				print("Exception %s in file %s" % (e, file))
+
+		lib_file_name = args.real_world_lib
+		with open(lib_file_name, "w+") as f:
+			for filename in p_files:
+				f.write(filename + "\n")
+			f.close()
+		sys.exit(0)
+
+
+	# Do the mapping (a lot happens here)
 	import time
 	start_time = time.time()
 	mapper = implementation.Mapper(implementation,files)
@@ -169,5 +201,5 @@ if __name__ == "__main__":
 	print("To see it, open %s"%args.outfile)
 
 	#open it in graphviz if we are on os.x
-	if DEBUG and sys.platform == 'darwin':
+	if builtins.DEBUG and sys.platform == 'darwin':
 		os.system("open out.gv")

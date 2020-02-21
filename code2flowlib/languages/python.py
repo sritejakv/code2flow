@@ -11,7 +11,8 @@ def getIndent(colonPos,sourceString):
 	try:
 		return indentPattern.search(sourceString[colonPos:]).group(1)
 	except:
-		pdb.set_trace()
+		# pdb.set_trace()
+		pass
 
 class Node(Node):
 	sameScopeKeyword = 'self'
@@ -336,7 +337,8 @@ class SourceCode(SourceCode):
 		try:
 			return self[startPos:endPos]
 		except:
-			pdb.set_trace()
+			# pdb.set_trace()
+			pass
 
 
 class Mapper(Mapper):
