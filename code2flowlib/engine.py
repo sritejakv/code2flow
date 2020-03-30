@@ -787,7 +787,7 @@ class Mapper(object):
 				self.files[f] = fi.read()
 
 
-	def map(self):
+	def map(self, **kwargs):
 		'''
 		I. For each file passed,
 			1. Generate the sourcecode for that file
@@ -826,6 +826,9 @@ class Mapper(object):
 				group._pprint()
 
 		#Figure out what functions map to what
+		if len(kwargs) > 0 and not kwargs['pruneEP']:
+			return fileGroups, None, None
+
 		print("Generating edges...")
 		edges = generateEdges(nodes)
 

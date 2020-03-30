@@ -161,7 +161,7 @@ if __name__ == "__main__":
 		for file in files:
 			try:
 				mapper = implementation.Mapper(implementation, [file])
-				groups, nodes, edges = mapper.map()
+				groups, nodes, edges = mapper.map(pruneEP=True)
 				p_files.append(file)
 			except Exception as e:
 				print("Exception %s in file %s" % (e, file))
