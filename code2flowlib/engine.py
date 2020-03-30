@@ -782,7 +782,7 @@ class Mapper(object):
 		Mapper = implementation.Mapper
 		SourceCode = implementation.SourceCode
 
-		for f in files:
+		for f in set(files):
 			with open(f) as fi:
 				self.files[f] = fi.read()
 
