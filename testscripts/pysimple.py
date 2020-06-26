@@ -8,15 +8,19 @@ obj.a()
 testscripts.pysimple3.g()
 pysimple4.infolderc()
 
+
 def b():
-	c()
+    c()
+
 
 def c():
-	print 'this is c'
+    print('this is c')
+
 
 class e:
-	def f():
-		b()
-		pysimple2.h.a()
+    def f(self):
+        b()
+        pysimple2.h.a()
+
 
 e.f()
