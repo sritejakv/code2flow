@@ -31,6 +31,8 @@ from .mutablestring import MString
 #for generating UIDs for groups and nodes
 currentUID = 0
 
+
+# Note: O(n2) loop for comparing nodes and generating edges
 def generateEdges(nodes):
 	'''
 	When a function calls another function, that is an edge
@@ -820,7 +822,7 @@ class Mapper(object):
 
 		#Trimming the groups mostly removes those groups with no function nodes
 		for group in fileGroups:
-			group.trimGroups()
+			group.trimGroups() # Note: No implementation
 			if builtins.DEBUG:
 				print("Post trim, %s"%group.name)
 				group._pprint()

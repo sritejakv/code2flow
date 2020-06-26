@@ -6,4 +6,7 @@ virEnv/*
 out.*
 code2flow.egg-info/*
 *.pyc
-
+realWorldLib/*
+*.dot
+*.png
+testDir/*

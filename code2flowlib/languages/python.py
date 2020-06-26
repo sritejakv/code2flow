@@ -16,6 +16,7 @@ def getIndent(colonPos,sourceString):
 
 class Node(Node):
 	sameScopeKeyword = 'self'
+	# Note: No idea why \A is present in the first group
 	namespaceBeforeDotPattern = re.compile(r'(?:[^\w\.]|\A)([\w\.]+)\.$',re.MULTILINE)
 
 	def generateSameScopePatterns(self):
@@ -55,6 +56,7 @@ class Node(Node):
 		else:
 			return True
 
+	# Note: Returns false if one nodes' import statement is not present in other nodes
 	def linksTo(self,other):
 
 		importNamespace = ''
@@ -80,6 +82,7 @@ class Node(Node):
 			importNamespace = importNamespace + '.' + other.parent.name if importNamespace else other.parent.name
 
 		#If the naive functionName (e.g. \Wmyfunc\( ) appears anywhere in this sourceString, check whether it is actually THAT function
+		# Note: Checks for the function name of one node in the function body of other node
 		match = other.pattern.search(self.source.sourceString)
 		if match:
 			matchPos = match.start(1)
@@ -95,7 +98,8 @@ class Node(Node):
 				#try finding the namespace of the called object
 				try:
 					prefixSearchLine = self.source.sourceString[:matchPos].split('\n')[-1]
-					#print '"%s"'%prefixSearchLine
+					# Note: the below line basically gives the variable name using which a function is called
+					# and is calculated from 'self'.
 					namespace = self.namespaceBeforeDotPattern.search(prefixSearchLine).group(1)
 				except AttributeError:
 					#will not find a namespace if the object is in an array or something else weird
@@ -110,12 +114,22 @@ class Node(Node):
 				if other.parent == self.parent and namespace == self.sameScopeKeyword:
 					return True
 
+				# Note: Tries to find the initialization statement for the variable and extracts the class/method
+				# name from it. `newObjectMatch` contains the line in which the initialization statement is present
+				# `newObjectMatch.group(1)` gives the variable name which participates in the initialization. The
+				# below loop is wrong as it compare the variable name of `self` with `namespace + var name of `other``
+				# @Error
 				#If a new object was created prior to this call and that object calls this function, that is a match
-				newObjectMatch = other.parent.newObjectAssignedPattern.search(self.source.sourceString)
+				newObjectMatch = other.parent.newObjectAssifgnedPattern.search(self.source.sourceString)
 				if newObjectMatch and namespace == importNamespace + newObjectMatch.group(1):
 					return True
 
+				# The following loop should also be present
+				# if newObjectMatch and namespace == newObjectMatch.group(1):
+				# 	return True
 
+		# Note: If one is an init node, then the name of that node with a '(' is checked in the function body of
+		# the other node in order to identify the initialization statement. 'newObjectPattern' contains '<functionName>('
 		#TODO put in try in case isInitNode not defined
 		if other.isInitNode and other.parent.newObjectPattern.search(self.source.sourceString):
 			return True
@@ -158,6 +172,7 @@ class Group(Group):
 	def trimGroups(self):
 		pass
 
+	# Note: This is the place that generates a node for each function definition
 	def _generateNodes(self):
 		'''
 		Find all function definitions, generate the nodes, and append them
@@ -173,6 +188,9 @@ class Group(Group):
 		'''
 		Return the regex for function definition at this indent level
 		'''
+		# Note: Here indent is set to 4 tabs and is used to in regex. Basically, "1 tab with def keyword" patterns are
+		# matched using the following regular expression. Any nodes that depend on the indentation such as nested
+		# classes or nested functions are not generated. @Error
 		indent = self.indent.replace(' ',r'\s').replace('	',r'\t')
 		return [re.compile(r"^%sdef\s(\w+)\s*\(.*?\)\s*\:"%indent,re.MULTILINE|re.DOTALL)]
 
@@ -193,6 +211,7 @@ class Group(Group):
 		return re.compile(r'%s\s*\('%self.name)
 
 	def generateNewObjectAssignedPattern(self):
+		# Note: It should be re.compile(r'(\w*)\s*=\s*%s\s*\('%self.name) @Error
 		return re.compile(r'(\w)\s*=\s*%s\s*\('%self.name)
 
 	def generateRootNode(self):
@@ -311,6 +330,9 @@ class SourceCode(SourceCode):
 		]
 	inlineComments = "#"
 
+	# Note: Gets the function body from SourceString based on the intendation
+	# TODO: Create a python file with no intendation for two methods and check
+	#  if both method body is mapped to a single method source here
 	def getSourceInBlock(self,colonPos,fullSource=False):
 		'''
 		Overwrites superclass method
