@@ -125,8 +125,8 @@ class Node(Node):
 					return True
 
 				# The following loop should also be present
-				# if newObjectMatch and namespace == newObjectMatch.group(1):
-				# 	return True
+				if newObjectMatch and namespace == newObjectMatch.group(1):
+					return True
 
 		# Note: If one is an init node, then the name of that node with a '(' is checked in the function body of
 		# the other node in order to identify the initialization statement. 'newObjectPattern' contains '<functionName>('
@@ -212,7 +212,7 @@ class Group(Group):
 
 	def generateNewObjectAssignedPattern(self):
 		# Note: It should be re.compile(r'(\w*)\s*=\s*%s\s*\('%self.name) @Error
-		return re.compile(r'(\w)\s*=\s*%s\s*\('%self.name)
+		return re.compile(r'(\w*)\s*=\s*%s\s*\(' % self.name)
 
 	def generateRootNode(self):
 		name = self._generateRootNodeName()
