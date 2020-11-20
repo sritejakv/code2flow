@@ -120,7 +120,7 @@ class Node(Node):
 				# below loop is wrong as it compare the variable name of `self` with `namespace + var name of `other``
 				# @Error
 				#If a new object was created prior to this call and that object calls this function, that is a match
-				newObjectMatch = other.parent.newObjectAssifgnedPattern.search(self.source.sourceString)
+				newObjectMatch = other.parent.newObjectAssignedPattern.search(self.source.sourceString)
 				if newObjectMatch and namespace == importNamespace + newObjectMatch.group(1):
 					return True
 
